@@ -11,7 +11,7 @@ dotenv.config();
 
 const DIR_NAME = 'videos';
 const PORT = process.env.PORT;
-createDirForVideos(DIR_NAME);
+// createDirForVideos(DIR_NAME);
 
 const start = () => {
   const app: Application = express();
@@ -19,6 +19,7 @@ const start = () => {
   app.use(bodyParser.json());
   app.use('/api', router);
   app.use('/', streamRouter);
+  app.use(express.static('videos'));
 
   const server = app.listen(PORT, () =>
     console.log(`Server started on port ${PORT}`)

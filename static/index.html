@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>HLS Player</title>
+  </head>
+
+  <body>
+    <input id="text-inp" type="text" placeholder="Enter link to the playlist" />
+    <button id="button" type="button">Send</button>
+    <video id="video" width="500" height="500" controls></video>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+      const linkInp = document.getElementById('text-inp');
+      const button = document.getElementById('button');
+
+      button.addEventListener('click', handleButtonClick);
+
+      function handleButtonClick(e) {
+        if (linkInp.value !== '') {
+          const video = document.getElementById('video');
+          const videoSrc = linkInp.value;
+
+          if (Hls.isSupported()) {
+            const hls = new Hls();
+
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+              video.play();
+            });
+          } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = videoSrc;
+            video.addEventListener('loadedmetadata', () => {
+              video.play();
+            });
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

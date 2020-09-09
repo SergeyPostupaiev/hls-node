@@ -11,11 +11,15 @@ export class VideoController {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    const hostName = `${req.protocol}://${req.get('host')}`;
 
     VideoService.convertToHSL(req.body.link);
 
-    emitter.once('endCnv', (data: idList) => {
-      res.send(data);
+    emitter.once('startCnv', ({ id, playListLink }: idList) => {
+      res.send({
+        id,
+        playListLink: `${hostName}/${playListLink}`,
+      });
     });
   }
 
@@ -39,5 +43,9 @@ export class VideoController {
     emitter.once('getIds', (data: { key: string }) => {
       res.send(data);
     });
+  }
+
+  public static getVideos(req: Request, res: Response) {
+    return res.status(200).sendFile(`${process.cwd()}/static/index.html`);
   }
 }

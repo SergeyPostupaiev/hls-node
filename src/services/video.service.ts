@@ -22,8 +22,10 @@ export class VideoService {
   public static convertToHSL(link: string) {
     const id = Date.now();
     const DIR_NAME = `videos/${id}`;
+    const OUTPUT_FILE = 'output.m3u8';
+    const DIST = `${DIR_NAME}/${OUTPUT_FILE}`;
 
-    const playListLink = path.join(process.cwd(), `${DIR_NAME}/output.m3u8`);
+    const playListLink = path.join(process.cwd(), DIST);
     createDirForVideos(DIR_NAME);
     const converter = new ffmpeg();
 
@@ -33,6 +35,13 @@ export class VideoService {
       .output(playListLink)
       .on('start', (commandLine) => {
         console.log(`Command: ${commandLine}`);
+
+        const data = {
+          id,
+          playListLink: DIST,
+        };
+
+        emitter.emit('startCnv', data);
       })
       .on('error', (err) => {
         console.log(err.message);
@@ -42,12 +51,6 @@ export class VideoService {
       })
       .on('end', () => {
         console.log('Done');
-        const data = {
-          id,
-          playListLink,
-        };
-
-        emitter.emit('endCnv', data);
       })
       .run();
   }

@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "tsc && node dist/app.js",
     "server": "nodemon src/app.ts",
-    "build": "tsc -p .",
-    "postinstall": "npm run build"
+    "build": "tsc -p ."
   },
   "keywords": [],
   "author": "",
